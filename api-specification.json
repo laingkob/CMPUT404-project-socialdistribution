@@ -5,7 +5,7 @@
       "version":"1.0"
     },
     "servers": [
-      {"url":"https://fillthisin/v1"}
+      {"url":"https://ourwebsite/v1"}
     ],
     "paths": {
     }
