@@ -1,7 +1,6 @@
 from djongo import models
 from django.contrib.auth.models import User
 import uuid
-from django.core import serializers
 
 # Create your models here.
 
@@ -13,6 +12,19 @@ class Author(models.Model):
     github = models.URLField()
     profileImage = models.URLField()
 
+
+    def toJSON(self):
+        return {
+            "type": "author",
+            "id": str(self._id),
+            "host": self.host,
+            "displayName": self.displayName,
+            "url": f"{self.host}/authors/{self._id}", #generated here
+            "github": self.github,
+            "profileImage": self.profileImage,
+    }
+    
 class Followers(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="all_authors")
     follower = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="all_followers")
+

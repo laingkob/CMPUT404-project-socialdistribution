@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models.author import Author,Followers
+from service.models import author, post
 
 # Register your models here.
 
-admin.site.register(Author)
-admin.site.register(Followers)
+admin.site.register(author.Author)
+admin.site.register(author.Followers)
+#admin.site.register(post.Post) #we don't need this here, but leaving as comment just in case
+#admin.site.register(post.Category)
+

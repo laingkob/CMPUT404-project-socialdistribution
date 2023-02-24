@@ -19,7 +19,7 @@ from django.urls import reverse
 class MultipleAuthors(View):
     http_method_names = ["get"]
     
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs):
         authors_queryset = Author.objects.all().order_by('displayName')
         page = request.GET.get('page', '')
         size = request.GET.get('size', '')
@@ -37,7 +37,7 @@ class MultipleAuthors(View):
         authors = list()
 
         for author in page:
-            authors.append(encode_json(author))
+            authors.append(author.toJSON())
 
         authors = encode_list(authors)
 
@@ -56,10 +56,10 @@ class SingleAuthor(View):
         if not author:
             return HttpResponseNotFound()
 
-        author_json = encode_json(author)
+        author_json = author.toJSON()
 
         return HttpResponse(json.dumps(author_json), content_type = CONTENT_TYPE_JSON)
-
+    
     def post(self, request, *args, **kwargs):
         body = request.body.decode(UTF8)
         body = json.loads(body)
@@ -82,7 +82,7 @@ class SingleAuthor(View):
 
         author.save() #updates whatever is set in the above if statements
 
-        author_json = encode_json(author)
+        author_json = author.toJSON()
 
         return HttpResponse(json.dumps(author_json), status=202, content_type = CONTENT_TYPE_JSON)
 
@@ -95,7 +95,7 @@ def encode_json(author: Author):
             "url": f"{author.host}/authors/{author._id}", #generated here
             "github": author.github,
             "profileImage": author.profileImage,
-    }
+
 
 def encode_list(authors):
     return {
