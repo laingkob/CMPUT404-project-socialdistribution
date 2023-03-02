@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DOMAIN = "http://localhost:8000" #TODO: CHANGE THIS IN PRODUCTION!!
+DOMAIN = "http://localhost" #TODO: CHANGE THIS IN PRODUCTION!!
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': (
