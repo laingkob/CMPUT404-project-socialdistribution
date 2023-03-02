@@ -20,8 +20,6 @@ export default function PlainPost(data) {
     .split("/")
     .pop()}`; // allows linking to the author who wrote the post
 
-  console.log(data);
-
   const [commentFieldVisibilty, setCommentFieldVisibilty] = useState(false);
   const [comment, setComment] = useState("");
   const submitComment = () => {

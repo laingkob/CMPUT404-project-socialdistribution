@@ -22,7 +22,7 @@ function Inbox() {
       <div className="Inbox">
         <p>This is now the inbox page</p>
         <PlainPost post={pseudoPost} />
-        {/* <NewPost/> */}
+        <NewPost />
       </div>
     </div>
   );
