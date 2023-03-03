@@ -1,5 +1,6 @@
 //import './friends.css';
 import { get_authors }from '../../api/author_api'
+import { get_author }from '../../api/author_api'
 import { useEffect, useState } from "react";
 import { Navigate, Route, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { add_followers_for_author } from '../../api/follower_api';
@@ -21,7 +22,7 @@ function Friends() {
     const [follow_list, setList] = useState({"items": []}); 
     const [success, setSucess] = useState(null); 
 
-    let page = 1
+    let page = 1;
   
     useEffect(() => { 
       get_author(`http://localhost/authors/${author_id}/`, setAuthor);
@@ -38,7 +39,7 @@ function Friends() {
     }
     
     const page_buttons = () => {
-        if (user_list.items.length < 5 && page == 1)
+        if (follow_list.items.length < 5 && page == 1)
         {
           return;
         } 
