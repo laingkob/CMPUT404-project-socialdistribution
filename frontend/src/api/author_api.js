@@ -17,7 +17,7 @@ export const get_author = async (authorId, success) => {
 };
 
 
-export const get_authors = async (page,success) => {
+export const get_authors = async (page, success) => {
   console.log("Attempting to retrieve all authors");
   await axios.get(`http://localhost:8000/authors/?page=${page}`,
   {
@@ -25,7 +25,7 @@ export const get_authors = async (page,success) => {
       Accept: "application/json"
     }
   }).then(function (response) {
-    console.log("Author_api res: ", response);
+    console.log("Multi Author_api res: ", response);
     success(response.data);
   })
   .catch(function (error) {

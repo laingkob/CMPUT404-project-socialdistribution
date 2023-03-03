@@ -2,8 +2,9 @@
 import { get_authors }from '../../api/author_api'
 import { get_author }from '../../api/author_api'
 import { useEffect, useState } from "react";
-import { Navigate, Route, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { add_followers_for_author } from '../../api/follower_api';
+import { useSelector } from "react-redux";
 
 import * as React from "react";
 import Table from "@mui/material/Table";
@@ -17,7 +18,9 @@ import Button from "@mui/material/Button";
 
 function Friends() {
 
-    const { author_id } = useParams();
+    var { author_id } = useParams();
+    author_id = useSelector((state) => state.user).id;
+    console.log("Starting page for :", author_id);
     const [author, setAuthor] = useState({});
     const [follow_list, setList] = useState({"items": []}); 
     const [success, setSucess] = useState(null); 
@@ -25,25 +28,25 @@ function Friends() {
     let page = 1;
   
     useEffect(() => { 
-      get_author(`http://localhost/authors/${author_id}/`, setAuthor);
-  
-      get_authors(page,setList)
+      console.log("Using effect");
       
-  
-    }, []);
+      get_author(author_id, setAuthor);
+      get_authors(page, setList)
+      
+    }, [author_id, page]);
 
   
-    const followAuthor= (follow_id) => {
-
-        add_followers_for_author(`http://localhost/authors/${author_id}`,follow_id, setSucess(true))
-    }
+    /*const followAuthor = async (follow_id) => {
+      console.log("Inside followAuthor");
+        await add_followers_for_author(`${author_id}`,follow_id, setSucess(true))
+    }*/
     
     const page_buttons = () => {
-        if (follow_list.items.length < 5 && page == 1)
+        if (follow_list.items.length < 5 && page === 1)
         {
           return;
         } 
-        else if (page == 1)
+        else if (page === 1)
         {
             return (<button onClick={forward_page}>Next Page</button>);
         } 
@@ -93,11 +96,11 @@ function Friends() {
                 <TableCell component="th" scope="row">
                   {row.id}
                 </TableCell>
-                <TableCell align="right">{row.displayname}</TableCell>
+                <TableCell align="right">{row.displayName}</TableCell>
                 <TableCell align="right">
                   <Button
                     variant="contained"
-                    onClick={followAuthor(row.id)}
+                    /*onClick={followAuthor(row.id)}*/
                   >
                     follow
                   </Button>
