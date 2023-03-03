@@ -12,11 +12,6 @@ export const post_comment = async (
   console.log("Attempting to post comment for", { postId });
   const data = { contentType: type, comment: comment };
 
-  /*Temporary Data*/
-  authorId = "http://localhost/authors/2c2600e9-f81d-491b-b3fe-f8dd7f984f01";
-  postId =
-    "http://localhost/authors/2c2600e9-f81d-491b-b3fe-f8dd7f984f01/posts/bcff78e5-3686-4103-b88e-8e4e297825b0";
-
   const res = await axios.post(
     `http://localhost:8000/authors/${authorId}/posts/${postId}/comments/`,
     data,

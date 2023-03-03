@@ -3,9 +3,6 @@ import axios from "axios";
 export const post_inbox = async (authorId, object, success) => {
   console.log("Attempting to post", { object }, "to", { authorId });
 
-  /*Temporary Data*/
-  authorId = "http://localhost/authors/2c2600e9-f81d-491b-b3fe-f8dd7f984f01";
-
   const res = await axios.post(
     `http://localhost:8000/authors/${authorId}/inbox/`,
     object,
