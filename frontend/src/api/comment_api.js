@@ -2,9 +2,15 @@ import axios from "axios";
 
 import { post_inbox } from "../api/inbox_api";
 
-export const post_comment = async (authorId, postId, comment, success) => {
+export const post_comment = async (
+  authorId,
+  postId,
+  type,
+  comment,
+  success
+) => {
   console.log("Attempting to post comment for", { postId });
-  const data = { comment: comment, contentType: "text/markdown" };
+  const data = { contentType: type, comment: comment };
 
   /*Temporary Data*/
   authorId = "http://localhost/authors/2c2600e9-f81d-491b-b3fe-f8dd7f984f01";

@@ -22,9 +22,10 @@ export default function PlainPost(data) {
 
   const [commentFieldVisibilty, setCommentFieldVisibilty] = useState(false);
   const [comment, setComment] = useState("");
+  const [commentType, setCommentType] = useState("text/plain");
   const submitComment = () => {
     if (comment) {
-      post_comment(data.post.author.id, data.post.id, comment);
+      post_comment(data.post.author.id, data.post.id, commentType, comment);
       setComment("");
       setCommentFieldVisibilty(false);
     } else {
@@ -59,6 +60,23 @@ export default function PlainPost(data) {
             </button>
             {commentFieldVisibilty && (
               <div className="comment-input-form">
+                <input
+                  type="radio"
+                  id="text"
+                  name="contentType"
+                  value="text/plain"
+                  defaultChecked
+                  onChange={(e) => setCommentType(e.target.value)}
+                />
+                <label htmlFor="text">Text</label>
+                <input
+                  type="radio"
+                  id="markdown"
+                  name="contentType"
+                  value="text/markdown"
+                  onChange={(e) => setCommentType(e.target.value)}
+                />
+                <label htmlFor="markdown">Markdown</label>
                 <input
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Enter the comment here"
