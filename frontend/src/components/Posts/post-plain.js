@@ -1,5 +1,6 @@
 import "./posts.css";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { author_api } from "../../api/post_display_api";
 import { post_comment } from "../../api/comment_api";
 
