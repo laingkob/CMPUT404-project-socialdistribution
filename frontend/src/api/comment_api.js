@@ -3,17 +3,17 @@ import axios from "axios";
 import { post_inbox } from "../api/inbox_api";
 
 export const post_comment = async (
-  authorId,
+  postAuthorId,
   postId,
   type,
   comment,
-  success
+  commentAuthorId
 ) => {
   console.log("Attempting to post comment for", { postId });
   const data = { contentType: type, comment: comment };
 
   const res = await axios.post(
-    `http://localhost:8000/authors/${authorId}/posts/${postId}/comments/`,
+    `http://localhost:8000/authors/${commentAuthorId}/posts/${postId}/comments/`,
     data,
     {
       headers: {
@@ -24,7 +24,7 @@ export const post_comment = async (
   );
   console.log(res);
   if (res.status == 201) {
-    post_inbox(authorId, res.data);
+    post_inbox(postAuthorId, res.data);
     console.log("Success!");
   } else {
     console.log("Error Occured");

@@ -27,7 +27,13 @@ export default function PlainPost(data) {
   const [commentType, setCommentType] = useState("text/plain");
   const submitComment = () => {
     if (comment) {
-      post_comment(user.id, data.post.id, commentType, comment);
+      post_comment(
+        data.post.author.id,
+        data.post.id,
+        commentType,
+        comment,
+        user.id
+      );
       setComment("");
       setCommentFieldVisibilty(false);
     } else {
