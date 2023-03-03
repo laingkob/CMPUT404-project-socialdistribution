@@ -4,6 +4,7 @@ import { author_api } from "../../api/post_display_api";
 import { post_comment } from "../../api/comment_api";
 
 export default function PlainPost(data) {
+  const user = useSelector((state) => state.user);
   //Get Author data -> author data is attached to data
 
   //Decide if shareable
@@ -25,7 +26,7 @@ export default function PlainPost(data) {
   const [commentType, setCommentType] = useState("text/plain");
   const submitComment = () => {
     if (comment) {
-      post_comment(data.post.author.id, data.post.id, commentType, comment);
+      post_comment(user.id, data.post.id, commentType, comment);
       setComment("");
       setCommentFieldVisibilty(false);
     } else {
