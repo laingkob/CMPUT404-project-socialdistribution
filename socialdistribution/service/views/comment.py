@@ -9,14 +9,27 @@ from datetime import datetime, timezone
 from service.services.rest_service import RestService
 import uuid
 
+from rest_framework.views import APIView
+from rest_framework.response import *
+
 from service.models.comment import Comment
 from service.models.post import Post
 from service.models.author import Author
 from django.core.exceptions import ObjectDoesNotExist
 
+from service.serializers.comment import CommentSerializer, PagedCommentSerializer
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 @method_decorator(csrf_exempt, name='dispatch')
-class CommentView(View, RestService):
-    ["get", "post"]
+class CommentView(APIView, RestService):
+    http_method_names = ["get", "post"]
+
+    comment_serializer = CommentSerializer
+
+    ok_response = openapi.Response('Success', PagedCommentSerializer)
+    @swagger_auto_schema(tags=['Comments'], responses={200: ok_response})
     def get(self, request, *args, **kwargs):
         self.author_id = kwargs['author_id']
         self.post_id = kwargs['post_id']
@@ -40,15 +53,15 @@ class CommentView(View, RestService):
         except:
             comment_page = list()
 
-        comments = list()
-
-        for comment in comment_page:
-            comments.append(comment.toJSON())
+        comments = self.comment_serializer().data
 
         comments_json = encode_list(comments, host, page, size, self.author_id, self.post_id)
 
-        return HttpResponse(json.dumps(comments_json), content_type = CONTENT_TYPE_JSON)
+        return Response(json.dumps(comments_json), content_type = CONTENT_TYPE_JSON)
 
+    ok_response = openapi.Response('Success', PagedCommentSerializer)   
+
+    @swagger_auto_schema(tags=['Comments'], responses={200: ok_response}, request_body=CommentSerializer, detail=True)
     def post(self, request, *args, **kwargs):
         self.author_id = kwargs['author_id']
         self.post_id = kwargs['post_id']

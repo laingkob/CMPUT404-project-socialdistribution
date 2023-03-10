@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
 
+from drf_yasg.utils import swagger_auto_schema
 from django.utils.decorators import method_decorator
 
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +20,7 @@ from django.views.decorators.http import require_http_methods
 
 #endpoints with just author_id
 @method_decorator(csrf_exempt, name='dispatch')
+
 class PostCreation(View, RestService):
     http_method_names = ['get', 'post']
 

@@ -3,24 +3,30 @@ from service.models.author import Author
 from service.service_constants import *
 from django.views import View
 
+from rest_framework.response import *
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
 
-import uuid
+from rest_framework.views import APIView
 
-from django.utils.decorators import method_decorator
+from service.serializers.author import AuthorSerializer, MultipleAuthorSerializer
 
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from djongo.models import Q
-from django.urls import reverse
+from drf_yasg.utils import swagger_auto_schema
+
+from drf_yasg import openapi
 
 # Create your views here.
 
-class MultipleAuthors(View):
+class MultipleAuthors(APIView):
     http_method_names = ["get"]
-    
+
+    author_serializer = AuthorSerializer
+
+    ok_response = openapi.Response('Success', MultipleAuthorSerializer)
+
+    @swagger_auto_schema(tags=['Authors'], responses={200: ok_response})
     def get(self, request: HttpRequest, *args, **kwargs):
         authors_queryset = Author.objects.all().order_by('displayName')
         page = request.GET.get('page', 1)
@@ -32,19 +38,22 @@ class MultipleAuthors(View):
             page = paged_authors.page(page)
         except:
             page = list()
-        
-        authors = list()
 
-        for author in page:
-            authors.append(author.toJSON())
-
+        authors = self.author_serializer(page, many=True).data
         authors = encode_list(authors)
 
-        return HttpResponse(json.dumps(authors), content_type = CONTENT_TYPE_JSON)
+        return Response(authors)
 
-class SingleAuthor(View):
+@swagger_auto_schema(request_body=Author)
+class SingleAuthor(APIView):
     http_method_names = ["get", "post"]
 
+    author_serializer = AuthorSerializer
+
+    ok_response = openapi.Response('Success', AuthorSerializer)
+    not_found = openapi.Response("Author not found")
+
+    @swagger_auto_schema(tags=['Authors'], responses={200: ok_response, 404: not_found})
     def get(self, request, *args, **kwargs):
         self.id = kwargs['author_id']
 
@@ -54,12 +63,13 @@ class SingleAuthor(View):
             author = None
 
         if not author:
-            return HttpResponseNotFound()
+            return Response(status=404)
 
-        author_json = author.toJSON()
+        author_json = self.author_serializer(author).data
 
-        return HttpResponse(json.dumps(author_json), content_type = CONTENT_TYPE_JSON)
+        return Response(author_json)
     
+    @swagger_auto_schema(tags=['Authors'], request_body=AuthorSerializer)
     def post(self, request: HttpRequest, *args, **kwargs):
         body = request.body.decode(UTF8)
         body = json.loads(body)
@@ -84,12 +94,12 @@ class SingleAuthor(View):
 
         author_json = author.toJSON()
 
-        return HttpResponse(json.dumps(author_json), status=202, content_type = CONTENT_TYPE_JSON)
+        return Response(json.dumps(author_json), status=202, content_type = CONTENT_TYPE_JSON)
 
 
 def encode_list(authors):
     return {
-        "type": "author",
+        "type": "authors",
         "items": authors
     }
 

@@ -10,7 +10,7 @@ def newId():
 
 class Author(models.Model):
     _id = models.URLField(primary_key=True, default=newId, editable=False)
-    host = models.URLField()
+    host = models.URLField(editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True) #link an Author to a registered user -> not required
     displayName = models.CharField(max_length=128)
     github = models.URLField()

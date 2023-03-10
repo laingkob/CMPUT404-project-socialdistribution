@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from service.models.author import Author
+from service.models.post import Post
 
-class AuthorSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField("set_id")
     type = serializers.SerializerMethodField("set_type")
     url = serializers.SerializerMethodField("set_url")
@@ -10,25 +10,25 @@ class AuthorSerializer(serializers.ModelSerializer):
         return str(author._id)
     
     def set_type(self, author):
-        return "author"
+        return "post"
     
     def set_url(self, author):
         return str(author.host)
 
     class Meta:
-        model = Author
-        fields = ["type", "id", "url", "host", "displayName", "github", "profileImage"]
+        model = Post
+        fields = []
 
 
-class MultipleAuthorSerializer(serializers.Serializer):
+class MultiplePostSerializer(serializers.Serializer):
     type = serializers.SerializerMethodField("set_type")
     items = serializers.ListField(
-        child=AuthorSerializer()
+        child=PostSerializer()
     )
 
     def set_type(self, author):
-        return "authors"
+        return "posts"
     
     class Meta:
-        model = Author
+        model = Post
         fields = ["type", "items"]
