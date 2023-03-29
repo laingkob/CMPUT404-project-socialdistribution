@@ -13,6 +13,8 @@ from django.views.generic import TemplateView
 import os
 from django.http.response import HttpResponse, HttpResponseNotFound
 
+from service.views.stream import AuthorStream
+
 HOST_REGEX = r"[A-Za-z0-9\w.-]+"
 GUID_REGEX = r"[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
 
@@ -37,6 +39,8 @@ urlpatterns = [
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/liked/', LikedView.as_view(), name='author_likes'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/posts/$', PostCreation.as_view(), name='post_creation'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/inbox/$', InboxView.as_view(), name='inbox_view'),
+    re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/stream/$', AuthorStream.as_view(), name='stream_view'),
+    re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/$', SingleAuthor.as_view()),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/$', SingleAuthor.as_view()),
     re_path(r'^$', MultipleAuthors.as_view()), 
 ]
