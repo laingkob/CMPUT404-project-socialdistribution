@@ -32,15 +32,17 @@ class AuthorStream(APIView):
             return HttpResponseNotFound()
 
         #get list of following
-
         following = Author.objects.all().filter(followers___id__contains=author._id)
-        print(following)
 
-        posts = list()
+        posts_json = list()
 
-        posts = Post.objects.all().filter().order_by('-published')
+        #needs visibility filtering.
+        posts = Post.objects.all().filter(author__in=following).order_by('-published')
 
-        return HttpResponse(json.dumps({}), content_type=CONTENT_TYPE_JSON)
+        for post in list(posts):
+            posts_json.append(post.toJSON())
+
+        return HttpResponse(json.dumps(posts_json), content_type=CONTENT_TYPE_JSON)
 
 def encode_list(authors):
     return {
