@@ -4,7 +4,6 @@ from django.core.paginator import Paginator
 from django.http import *
 from django.views import View
 
-
 from service.models.author import Author
 from service.service_constants import *
 from rest_framework.views import APIView

@@ -1,16 +1,12 @@
 import json
 
-from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import *
-from django.views import View
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from service.models.author import Author
 from service.models.post import Post
 from service.service_constants import *
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-import requests
 
 #returns an author's stream
 class AuthorStream(APIView):
