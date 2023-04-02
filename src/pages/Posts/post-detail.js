@@ -19,6 +19,7 @@ function PostDetail() {
   const [postInfo, setPostInfo] = useState(null);
   const [markdown, setMarkdown] = useState(false);
   const [shareable, setShareable] = useState(false);
+  const [image, setImage] = useState(false);
   const [likeInfo, setLikeInfo] = useState(null);
   const [liked, setLiked] = useState(false);
   const [commentsInfo, setCommentsInfo] = useState(null);
@@ -75,6 +76,10 @@ function PostDetail() {
     if (postData.visibility === "PUBLIC" || postData.visibility === "FRIENDS") {
       setShareable(true);
     }
+    if (postData.contentType.split("/")[0] === "image") {
+      setImage(true);
+    }
+  console.log(postData);
   };
 
   const successLike = (likeData) => {
@@ -157,16 +162,18 @@ function PostDetail() {
               {/* Will need to handle other post types here, plain for now */}
               <div className="content-container">
                 <h3 id="title">{postInfo.title}</h3>
-                {markdown ? (
+                {image && <img 
+                            src={"data:"+postInfo.contentType+"base64;"+postInfo.content}
+                            className="posted-image"/>
+                }
+                {!image && (markdown ? (
                   <ReactMarkdown
                     className="content line"
                     children={postInfo.content}
-                  >
-                    {/* Mardown doesn't like leading whitespace */}
-                  </ReactMarkdown>
+                  />
                 ) : (
                   <div className="content line">{postInfo.content}</div>
-                )}
+                ))}
               </div>
               <div className="timestamp">{postInfo.published}</div>
             </div>
