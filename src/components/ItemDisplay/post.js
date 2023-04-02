@@ -13,6 +13,8 @@ import LikeHeart from "../Buttons/like_button";
 import CommentArrow from "../Buttons/comment_button";
 import ShareIcon from "../Buttons/share_button";
 
+import profile from "../../images/profile.png";
+
 export default function Post(data) {
   // Visibility
   let markdown = data["post"]["contentType"] === "text/markdown" ? true : false;
@@ -88,7 +90,7 @@ export default function Post(data) {
         {/* Profile image w/link to post author's profile */}
         <div className="profile from">
           <a href={authorUrl}>
-            {<img alt="author" src={data.post.author.profileImage}></img>}
+            {<img alt="author" src={data.post.author.profileImage === "" ? profile : data.post.author.profileImage}></img>}
           </a>
         </div>
 

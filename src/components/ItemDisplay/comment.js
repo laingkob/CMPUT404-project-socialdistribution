@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { comment_like } from "../../api/like_api";
 import { get_liked } from "../../api/like_api";
 import LikeHeart from "../Buttons/like_button";
+import profile from "../../images/profile.png"
 
 export default function Comment(data) {
   let id = useSelector((state) => state.user).id;
@@ -58,7 +59,7 @@ export default function Comment(data) {
         {/* Profile image w/link to post author's profile */}
         <div className="profile from">
           <a href={authorUrl}>
-            {<img alt="author" src={data.data.author.profileImage}></img>}
+            {<img alt="author" src={data.data.author.profileImage === "" ? profile : data.data.author.profileImage}></img>}
           </a>
         </div>
 
