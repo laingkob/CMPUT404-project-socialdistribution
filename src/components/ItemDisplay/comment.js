@@ -5,11 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { comment_like } from "../../api/like_api";
 import { get_liked } from "../../api/like_api";
 import LikeHeart from "../Buttons/like_button";
-<<<<<<< HEAD
 import profile from "../../images/profile.png"
-=======
 import { Link } from "react-router-dom";
->>>>>>> be9e613f69bee1f17b3b4644f14181912d4332f4
 
 export default function Comment(data) {
   let id = useSelector((state) => state.user).id;
@@ -65,15 +62,9 @@ export default function Comment(data) {
       <div className="list-item">
         {/* Profile image w/link to post author's profile */}
         <div className="profile from">
-<<<<<<< HEAD
-          <a href={authorUrl}>
-            {<img alt="author" src={data.data.author.profileImage === "" ? profile : data.data.author.profileImage}></img>}
-          </a>
-=======
           <Link to={authorUrl}>
-            {<img alt="author" src={data.data.author.profileImage}></img>}
+            {<img alt="author" src={data.data.author.profileImage === "" ? profile : data.data.author.profileImage}></img>}
           </Link>
->>>>>>> be9e613f69bee1f17b3b4644f14181912d4332f4
         </div>
 
         {/* Title, message */}

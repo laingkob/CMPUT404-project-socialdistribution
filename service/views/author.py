@@ -97,7 +97,6 @@ class SingleAuthor(APIView):
         return HttpResponse(json.dumps(author_json), content_type=CONTENT_TYPE_JSON)
 
     def post(self, request: HttpRequest, *args, **kwargs):
-
         try:
             body = request.data
         except AttributeError:  # tests don't run without this

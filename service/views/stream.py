@@ -43,7 +43,6 @@ class AuthorStream(APIView):
         #following = Author.objects.all().filter(followers___id__contains=author._id)
         posts_json = list()
 
-        #needs visibility filtering.
         posts = Post.objects.all()\
             .filter(author__in=following)\
             .filter(visibility="PUBLIC")\
