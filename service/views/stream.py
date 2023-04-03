@@ -44,27 +44,14 @@ class AuthorStream(APIView):
         posts_json = list()
 
         #needs visibility filtering.
-        #posts = Post.objects.all().filter(Q(author__in=following) | Q(author___id=author_id)).order_by('-published')
+        posts = Post.objects.all()\
+            .filter(author__in=following)\
+            .filter(visibility="PUBLIC")\
+            .union(
+                Post.objects.all().filter(author___id=author._id).filter(visibility="PUBLIC")
+            ).order_by('-published')
 
-        try:
-            inbox = Inbox.objects.get(author=author)
-        except ObjectNotFound:
-            inbox = list()
-
-        inbox = list(inbox.posts.all())
-        print(inbox)
-
-        author_posts = list(Post.objects.all().filter(author=author))
-
-        inbox = inbox + author_posts
-
-        inbox.sort(key=lambda x: x.published, reverse=True)
-
-        #posts = Post.objects.all().filter(Q(author___id=author_id) | Q(=author_id)).order_by('-published')
-
-        #posts = filter_posts(author, posts, author)
-
-        for post in inbox:
+        for post in posts:
             if post.unlisted:
                 continue
             if post.author != author and not is_friend(post.author, author):
