@@ -11,6 +11,7 @@ import { get_post_like, post_like } from "../../api/like_api.js";
 import LikeHeart from "../../components/Buttons/like_button";
 import ShareIcon from "../../components/Buttons/share_button";
 import PostList from "../../components/ListItems/post-list";
+import profile from "../../images/profile.png";
 
 function PostDetail() {
   const { author_id, post_id } = useParams();
@@ -153,7 +154,7 @@ function PostDetail() {
         <div className="Fragment sidebar-offset">
           <div className="message">
             <div className="from">
-              <img alt="author" src={postInfo.author.profileImage}></img>
+              <img alt="author" src={postInfo.author.profileImage == "" ? profile : postInfo.author.profileImage}></img>
               <h6>
                 <Link to={authorUrl}>{postInfo.author.displayName}</Link>
               </h6>
