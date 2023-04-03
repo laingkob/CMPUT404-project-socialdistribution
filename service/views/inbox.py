@@ -80,7 +80,6 @@ class InboxView(APIView):
     def post(self, request: HttpRequest, *args, **kwargs):
         self.author_id = kwargs['author_id']
 
-        # try and get author of the inbox
         try:
             author = Author.objects.get(_id=self.author_id, is_active=True)
         except ObjectDoesNotExist:
