@@ -84,10 +84,10 @@ class CommentView(APIView):
         self.author_id = kwargs['author_id']
         self.post_id = kwargs['post_id']
 
-        try: 
+        try:
             body = request.data
-        except:
-            body = request.body.decode(UTF8)
+        except AttributeError:  # tests don't run without this
+            body = request.body
             body = json.loads(body)
 
         try:
@@ -99,7 +99,7 @@ class CommentView(APIView):
         comment = Comment()
 
         try:
-            comment._id = Comment.create_comment_id(self.author_id, self.post_id)
+            comment._id = Comment.create_comment_id(post.author._id, self.post_id)
             comment.comment = body["comment"]
             comment.author = author
             comment.post = post

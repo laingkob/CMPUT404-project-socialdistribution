@@ -43,24 +43,37 @@ class AuthorStream(APIView):
         following = Author.objects.all().filter(followers___id__contains=author._id)
         posts_json = list()
 
-        posts = Post.objects.all()\
-            .filter(author__in=following)\
-            .filter(visibility="PUBLIC")\
-            .union(
-                Post.objects.all().filter(author___id=author._id).filter(visibility="PUBLIC")
-            ).order_by('-published')
+        #needs visibility filtering.
+        #posts = Post.objects.all().filter(Q(author__in=following) | Q(author___id=author_id)).order_by('-published')
 
-        for post in posts:
+        try:
+            inbox = Inbox.objects.get(author=author)
+        except ObjectNotFound:
+            inbox = list()
+
+        inbox = list(inbox.posts.all())
+        print(inbox)
+
+        author_posts = list(Post.objects.all().filter(author=author))
+
+        inbox = inbox + author_posts
+
+        inbox.sort(key=lambda x: x.published, reverse=True)
+
+        #posts = Post.objects.all().filter(Q(author___id=author_id) | Q(=author_id)).order_by('-published')
+
+        #posts = filter_posts(author, posts, author)
+
+        followers = list(author.followers.all())
+
+        for post in inbox:
             if post.unlisted:
                 continue
-            if post.author != author and not is_friend(post.author, author):
+            if post.visibility == "FRIENDS" and post.author not in followers:
                 continue
             posts_json.append(post.toJSON())
 
         return HttpResponse(json.dumps(posts_json), content_type=CONTENT_TYPE_JSON)
-
-def is_friend(author1: Author, author2: Author):
-    return author1 in list(author2.followers.all()) and author2 in list(author1.followers.all())
 
 def encode_list(authors):
     return {

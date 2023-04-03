@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     'http://localhost:8000',
     'http://31552.yeg.rac.sh:8000',
     "https://cmput404-group-project.herokuapp.com",
-    "https://socialdistcmput404.herokuapp.com"
+    "https://socialdistcmput404.herokuapp.com",
+    "https://sd16-api.herokuapp.com"
 ]
 
 CORS_REPLACE_HTTPS_REFERER = True
@@ -47,7 +48,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://31552.yeg.rac.sh:8000',
     "https://cmput404-group-project.herokuapp.com",
-    "https://socialdistcmput404.herokuapp.com"
+    "https://socialdistcmput404.herokuapp.com",
+    "https://sd16-api.herokuapp.com"
 ]
 
 CORS_ALLOW_HEADERS = ["access-control-allow-origin", 'content-type', 'content-length', 'x-csrftoken', 'authorization', 'referer']
@@ -56,7 +58,8 @@ CSRF_TRUSTED_ORIGINS = [
     "localhost:3000",
     '31552.yeg.rac.sh:8000',
     "cmput404-group-project.herokuapp.com",
-    "socialdistcmput404.herokuapp.com"
+    "socialdistcmput404.herokuapp.com",
+    "sd16-api.herokuapp.com"
 ]
 
 # Application definition
