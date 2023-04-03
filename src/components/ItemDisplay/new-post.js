@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
-import { useState, useEffect, useNavigate } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { send_api, post_api, edit_api } from "../../api/post_display_api";
 import { get_followers_for_author } from "../../api/follower_api";
 import "./form.css";
