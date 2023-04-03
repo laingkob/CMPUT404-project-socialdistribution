@@ -7,7 +7,7 @@ from service.views.follow_request import AuthorFollowRequests, FollowRequests
 from service.views.follower import FollowersAPI, FollowerAPI, Follower_API, FriendAPI
 from service.views.inbox import InboxView
 from service.views.liked import LikedView, LikesView
-from service.views.post import PostCreation, PostWithId
+from service.views.post import PostCreation, PostWithId, PostImage
 from service.views.stream import AuthorStream
 
 HOST_REGEX = r"[A-Za-z0-9\w.-]+"
@@ -30,6 +30,7 @@ urlpatterns = [
     re_path(rf'(?P<author_id>{AUTHOR_ID_REGEX})/followers/', FollowersAPI.as_view(),name = "getfollowers"),
     re_path(rf'(?P<author_id>{AUTHOR_ID_REGEX})/posts/(?P<post_id>{POST_ID})/likes/', LikesView.as_view(), name='post_likes'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/posts/(?P<post_id>{POST_ID})/comments/$', CommentView.as_view(), name='comment_view'),
+    re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/posts/(?P<post_id>{POST_ID})/image/', PostImage.as_view(), name='image_view'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/posts/(?P<post_id>{POST_ID})/$', PostWithId.as_view(), name='post_with_id'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/liked/', LikedView.as_view(), name='author_likes'),
     re_path(rf'^(?P<author_id>{AUTHOR_ID_REGEX})/posts/$', PostCreation.as_view(), name='post_creation'),

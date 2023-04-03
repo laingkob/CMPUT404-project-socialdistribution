@@ -8,7 +8,7 @@ import { post_comment } from "../../api/comment_api";
 import { post_like } from "../../api/like_api";
 import { get_liked } from "../../api/like_api";
 //Components
-import ReactMarkdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 import LikeHeart from "../Buttons/like_button";
 import CommentArrow from "../Buttons/comment_button";
 import ShareIcon from "../Buttons/share_button";
@@ -107,10 +107,10 @@ export default function Post(data) {
             />
           )}
           {markdown && (
-            <ReactMarkdown
+            <Markdown
               className="content"
-              children={data["post"]["content"]}
-            />
+              >{data["post"]["content"]}
+            </Markdown>
           )}
           {!markdown && !image && (
             <div className="content">{data["post"]["content"]}</div>

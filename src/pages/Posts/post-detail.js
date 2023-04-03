@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sidebar";
 import "./post-detail.css";
@@ -167,10 +167,10 @@ function PostDetail() {
                             className="posted-image"/>
                 }
                 {!image && (markdown ? (
-                  <ReactMarkdown
+                  <Markdown
                     className="content line"
-                    children={postInfo.content}
-                  />
+                  >{postInfo.content}
+                  </Markdown>
                 ) : (
                   <div className="content line">{postInfo.content}</div>
                 ))}

@@ -206,4 +206,9 @@ REST_FRAMEWORK = {
     ],
 }
 
+# Uploaded Image files (image/*)
+# GeeksForGeeks, https://www.geeksforgeeks.org/python-uploading-images-in-django/, Nov 29 2022
+IMAGE_ROOT =  os.path.join(BASE_DIR, 'images')
+IMAGE_URL = '/images/'
+
 django_on_heroku.settings(locals())

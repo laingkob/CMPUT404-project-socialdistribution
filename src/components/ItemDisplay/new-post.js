@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { send_api, post_api } from "../../api/post_display_api";
 import { get_followers_for_author } from "../../api/follower_api";
-import ImageUpload from "./image-upload";
 
 export default function NewPost() {
     //Get user info

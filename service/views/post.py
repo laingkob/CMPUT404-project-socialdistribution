@@ -19,6 +19,8 @@ from service.service_constants import *
 from service.services import team_14, team_22
 from service.services.rest_service import RestService
 from rest_framework.permissions import IsAuthenticated
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 # endpoints with just author_id
 @method_decorator(csrf_exempt, name='dispatch')
@@ -285,3 +287,57 @@ def encode_list(posts):
         "type": "posts",
         "items": posts
     }
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PostImage(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'put']
+
+    def get(self, request, *args, **kwargs):
+        """ Get the image url for a user post """
+        self.post_author_id = kwargs['author_id']
+        self.post_id = kwargs['post_id']
+        self.requesting_id = kwargs['requester_id']
+
+        try:    # Find author
+            author = Author.objects.get(_id=self.post_author_id)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Post author not found")
+        
+        try:    # Find post
+            requester = Author.objects.get(_id=self.requesting_id)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Requesting author not found")
+
+        try:    # Find requesting author
+            post = Post.objects.get(_id=self.post_id)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Post not found")
+        
+        # 404 if not image
+        if (post.contentType.split("/")[0] != "image"):
+            return HttpResponseNotFound("Not image")
+        
+        # 401 if not authorized to GET image
+        if (post.visibility != "PUBLIC") \
+            and (requester not in author.followers.all()):
+            return HttpResponse('401 Unauthorized', status=401)
+        
+        '''For later'''
+        if post.origin == settings.REMOTE_USERS[0][1]:
+        #team_14
+            pass
+        # remote-user-t22
+        elif post.origin == settings.REMOTE_USERS[1][1]:
+            pass
+        # remote-user-t16
+        elif post.origin == settings.REMOTE_USERS[2][1]:
+            pass
+        # team 10
+        elif post.origin == settings.REMOTE_USERS[3][1]:
+            pass
+        else:
+            pass
+
+        return HttpResponse(post.content, content_type = post.contentType)
+        

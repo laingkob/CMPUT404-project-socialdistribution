@@ -155,6 +155,31 @@ class PostTests(TestCase):
         else:
             self.fail("Post should have been deleted")
 
+
+    def test_image_get(self):
+        image_post = Post.objects.create(_id=Post.create_post_id(self.author1._id), author=self.author1) #create a blank object to delete
+
+        self.kwargs = {
+            'author_id': self.author1._id,
+            'post_id': image_post._id,
+            'requesting_id': self.author2._id
+        }
+
+        post = Post.objects.get(_id=image_post._id)
+
+        if not post:
+            self.fail("Object was not created properly, migration may be broken")
+
+        url = reverse('image_view', kwargs=self.kwargs) #reverse grabs the full relative url out of urls.py and attaches kwargs
+
+        post_request = self.request_factory.get(url, content_type = "image/*")
+        post_request.user = self.user1
+
+        posts_response = self.id_view.get(post_request, author_id=self.kwargs["author_id"], post_id=self.kwargs["post_id"], requesting_id=self.kwargs['requesting_id'])
+        
+        self.assertEqual(posts_response.status_code, 200)
+
+
 def create_post():
     return {
         "title": "This is a title!",

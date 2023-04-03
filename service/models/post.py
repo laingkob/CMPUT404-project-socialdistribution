@@ -1,5 +1,4 @@
 from django.db import models
-from django import forms
 from service.models.author import Author
 import uuid
 from datetime import datetime, timezone
@@ -34,6 +33,8 @@ class Post(models.Model):
 
     contentType = models.CharField(max_length=20, choices=CONTENT_TYPES, default=MARKDOWN)
     content = models.TextField()
+    image = models.ImageField(upload_to='images/')
+    
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     categories = models.ManyToManyField(Category)
@@ -56,6 +57,10 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def toJSON(self):
+        if self.contentType == self.MARKDOWN or self.contentType == self.PLAIN:
+            content = self.content
+        else:
+            content = self.image
         return {
             "type": "post",
             "title": self.title,
@@ -64,7 +69,7 @@ class Post(models.Model):
             "origin": self.origin,
             "description": self.description,
             "contentType": self.contentType,
-            "content": self.content,
+            "content": content,
             "author": self.author.toJSON(),
             "categories": list(self.categories.values_list(flat=True)),
             "published": str(self.published),
@@ -78,7 +83,10 @@ class Post(models.Model):
         self.origin = json_object["origin"]
         self.description = json_object["description"]
         self.contentType = json_object["contentType"]
-        self.content = json_object["content"]
+        if self.contentType == self.MARKDOWN or self.contentType == self.PLAIN:
+            self.content = json_object["content"]
+        else:
+            self.image = json_object["content"]
         self.author = Author().toObject(json_object["author"])
         self.published = json_object["published"]
         self.visibility = json_object["visibility"]
@@ -96,4 +104,3 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.title}, {self.author}, {self.published}"
-

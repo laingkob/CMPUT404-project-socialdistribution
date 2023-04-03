@@ -14,3 +14,4 @@ wheel~=0.38.4
 docutils~=0.19
 setuptools~=67.2.0
 requests
+Pillow
