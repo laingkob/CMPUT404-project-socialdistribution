@@ -59,7 +59,6 @@ export default function ImageUpload() {
             fileReader.readAsDataURL(file);
 
             fileReader.onload = () => {
-                console.log(fileReader.result.slice(0,40));
                 resolve(
                     fileReader.result.split("base64,").pop());
             };
