@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -16,7 +16,8 @@ import profile from "../../images/profile.png";
 function PostDetail() {
   const { author_id, post_id } = useParams();
   const user = useSelector((state) => state.user);
-
+  
+  const [mine, setMine] = useState(false);
   const [postInfo, setPostInfo] = useState(null);
   const [markdown, setMarkdown] = useState(false);
   const [shareable, setShareable] = useState(false);
@@ -29,6 +30,8 @@ function PostDetail() {
   const [commentPage, setCommentPage] = useState(1);
   const [commentSize, setCommentSize] = useState(5);
   const [nextCommentPageInfo, setNextCommentPageInfo] = useState(null);
+  const [editLink, setEditLink] = useState("");
+  const navigate = useNavigate();
 
   const successPostLike = (success) => {
     setLiked(success);
@@ -81,6 +84,10 @@ function PostDetail() {
       setImage(true);
     }
   console.log(postData);
+    if (postData.author.id === user.id && postData.visibility === "PUBLIC") {
+      setMine(true);
+    }
+    setEditLink(window.location.href+"/edit");
   };
 
   const successLike = (likeData) => {
@@ -109,6 +116,11 @@ function PostDetail() {
       setNextCommentPageInfo(commentData);
     }
   };
+
+  const goToEdit = () => {
+    navigate("./edit", {state:{postInfo}});
+  }
+
 
   useEffect(() => {
     if (likeInfo) {
@@ -158,6 +170,7 @@ function PostDetail() {
               <h6>
                 <Link to={authorUrl}>{postInfo.author.displayName}</Link>
               </h6>
+              {mine && <button onClick={goToEdit}>EDIT</button>}
             </div>
             <div className="postBody">
               {/* Will need to handle other post types here, plain for now */}

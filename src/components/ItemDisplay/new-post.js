@@ -1,23 +1,29 @@
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { send_api, post_api } from "../../api/post_display_api";
+import { useState, useEffect, useNavigate } from "react";
+import { send_api, post_api, edit_api } from "../../api/post_display_api";
 import { get_followers_for_author } from "../../api/follower_api";
-import ImageUpload from "./image-upload";
+import "./form.css";
+import { useLocation } from "react-router-dom";
 
 export default function NewPost() {
     //Get user info
     const user = useSelector((state) => state.user).id;
 
+    const [edit, setEdit] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [contentType, setContentType] = useState("text/plain");
     const [body, setBody] = useState("");
-    const [visibility, setVisibility] = useState("");
+    const [visibility, setVisibility] = useState("PUBLIC");
     const [unlisted, setUnlisted] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [id, setId] = useState("");
 
     const [followers, setFollowers] = useState([]);
     const [posted, setPosted] = useState(null);
+
+    const {state} = useLocation();
+    const navigate = useNavigate();
 
     const populateFollowers = async () => {
         await get_followers_for_author(user, setFollowers);
@@ -25,6 +31,7 @@ export default function NewPost() {
 
     const sendPost = async () => {
         await send_api(followers, posted);
+        navigate("/");
     }
 
     const submit = async (e) => {
@@ -38,12 +45,13 @@ export default function NewPost() {
         "categories": categories.split(",")};
 
         e.preventDefault();
-        console.log(user, "is attempting to post", data);
-        await post_api(user, data, setPosted);
-        
-        //let followers = get_followers_for_author(user, setSucess);
-        // console.log("Starting to send ...");
-        // send_api(followers, sendLink);
+        if (edit) {
+            console.log(user, "is attempting to edit post", id);
+            await edit_api(user, id, data, setPosted);
+        } else {
+            console.log(user, "is attempting to post", data);
+            await post_api(user, data, setPosted);
+        }
     };
 
     const handleCheckbox = (e) => {
@@ -51,6 +59,23 @@ export default function NewPost() {
         let check = e.target.checked ? true : false;
         setUnlisted(check);
     }
+
+    useEffect( () => {
+        let data = state;
+        if (data) {
+            data = data.postInfo;
+            setEdit(true);
+            setTitle(data.title);
+            setDescription(data.description);
+            setContentType(data.contentType);
+            setBody(data.content);
+            setCategories(data.categories);
+            setVisibility(data.visibility);
+            console.log("id:", data.id);
+            setId(data.id.split("/").pop());
+        }
+    }, []);
+
 
     useEffect(() => {
         //only runs once
@@ -63,89 +88,93 @@ export default function NewPost() {
       }, [posted]);
 
     return (
-        <div>
-            <form encType="multipart/form-data" method="POST">
-            <label>Content Type: </label>
-                    <br/>
-                    <input
-                        name="type"
-                        type="radio"
-                        value="text/plain"
-                        required
-                        onChange={(e) => setContentType(e.target.value)}/>
-                     Plain Text
-                     <br/>
-                    <input
-                        name="type"
-                        type="radio"
-                        value="text/markdown"
-                        required
-                        onChange={(e) => setContentType(e.target.value)}/>
-                     Markdown
-                     <br/>
-                <label>Title</label><br/>
+        <div className="form-container">
+            <form className="form" encType="multipart/form-data" method="POST">
+                {edit ? <h1>Edit Text Post</h1> : <h1>New Text Post</h1>}
+                <div className="form-group">
+                    <label for="contentType">Content Type: </label>
+                    <select value={contentType} 
+                            name="contentType" 
+                            className="dropdown"
+                            onChange={(e) => setContentType(e.target.value)}>
+                        <option
+                            value="text/plain">
+                        Plain Text
+                        </option>
+                        <option
+                            value="text/markdown">
+                        Markdown
+                        </option>
+                     </select>
+                </div>
+                <label>Visibility: </label>
+                <select value={visibility} 
+                        name="visibility" 
+                        className="dropdown"
+                        onChange={(e) => setVisibility(e.target.value)}
+                >
+                    <option
+                        value="PUBLIC"
+                    >
+                    Public
+                    </option>
+                    <option
+                        value="FRIENDS"
+                        >
+                    Friends Only
+                    </option>
+                </select>
+                {!edit && <label>  Unlisted</label>&&
                 <input
-                    placeholder="Title.."
-                    name="title"
+                    name="unlisted"
+                    type="checkbox"
+                    defaultChecked={false}
+                    onChange={handleCheckbox}
+                />}
+                <br/>
+                <div className="form-group">
+                    <input
+                        className="form-control"
+                        placeholder="Title.."
+                        name="title"
+                        type="text"
+                        value={title}
+                        required
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <textarea 
+                    className="form-control ta"
+                    placeholder="Content.."
                     type="text"
-                    value={title}
+                    rows="4"
+                    value={body}
                     required
-                    onChange={(e) => setTitle(e.target.value)}
-                /><br/>
-                <label>Description</label><br/>
+                    onChange={(e) => setBody(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
                 <textarea
+                    className="form-control ta"
                     placeholder="Description.."
                     name="description"
                     type="text"
                     value={description}
                     required
                     onChange={(e) => setDescription(e.target.value)}
-                /><br/>
-                <label>Body</label><br/>
-                    <textarea
-                    placeholder="Content.."
-                    name="content"
-                    type="text"
-                    value={body}
-                    required
-                    onChange={(e) => setBody(e.target.value)}
-                /><br/>
-                
-                <label>Visibility</label><br/>
-                Public
-                    <input
-                        name="visibility"
-                        type="radio"
-                        value="PUBLIC"
-                        required
-                        onChange={(e) => setVisibility(e.target.value)}
-                    /><br/>
-                Friends Only
-                    <input
-                            name="visibility"
-                            type="radio"
-                            value="FRIENDS"
-                            required
-                            onChange={(e) => setVisibility(e.target.value)}
-                        /><br/>
-                
-                <label>Unlisted</label>
-                <input
-                    name="unlisted"
-                    type="checkbox"
-                    defaultChecked={false}
-                    onChange={handleCheckbox}
-                /><br/>
-                <label>Categories</label><br/>
+                />
+                </div>
                 <textarea
                     placeholder="Categories.."
+                    className="form-control ta"
                     name="categories"
                     type="text"
                     value={categories}
                     required
                     onChange={(e) => setCategories(e.target.value)}
                 /><br/>
-                <button type="submit" onClick={submit}>Submit</button>
+                <button type="submit" className="btn" onClick={submit}>Submit</button>
             </form>
         </div>
 
