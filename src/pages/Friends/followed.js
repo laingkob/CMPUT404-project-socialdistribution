@@ -3,7 +3,6 @@ import "./friends.css";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { get_followed_for_author } from "../../api/follower_api";
-import { delete_followers_for_author } from "../../api/follower_api";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import * as React from "react";
@@ -34,10 +33,10 @@ function Followed() {
   useEffect(() => {
     get_followed_for_author(user.id, setList);
   }, []);
-
-  const DeleteAuthor = (follow_id) => {
-    delete_followers_for_author(user.id, follow_id, onSuccess);
-  };
+  
+  const Details = (follow_id) => {
+    navigate(`/user/${follow_id.split("/").pop()}`);
+  };  
 
   const onSuccess = () => {
     setSuccess(true);
@@ -45,37 +44,6 @@ function Followed() {
 
   const goBack = () => {
     navigate("/");
-  };
-
-  let page = 1;
-  const page_buttons = () => {
-    if (follow_list.items.length < 5 && page === 1) {
-      return;
-    }
-    if (page === 1) {
-      return <button onClick={forward_page}>Next Page</button>;
-    } else if (follow_list.items.length < 5) {
-      return <button onClick={back_page}>Prev Page</button>;
-    } else {
-      return (
-        <div>
-          <button onClick={back_page}>Prev Page</button>
-          <button onClick={forward_page}>Next Page</button>
-        </div>
-      );
-    }
-  };
-
-  const forward_page = () => {
-    page = page + 1;
-    navigate(`/friends/?page=${page}`);
-    navigate(0);
-  };
-
-  const back_page = () => {
-    page = page - 1;
-    navigate(`/friends/?page=${page}`);
-    navigate(0);
   };
 
   return (
@@ -131,10 +99,10 @@ function Followed() {
                   <TableCell align="right">
                     <Button
                       variant="contained"
-                      color="error"
-                      onClick={(e) => DeleteAuthor(row.id)}
+                      color="success"
+                      onClick={(e) => Details(row.id)}
                     >
-                      Delete
+                     Details
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -142,9 +110,6 @@ function Followed() {
             </TableBody>
           </Table>
         </TableContainer>
-        <div style={{ width: "100%", textAlign: "center", paddingTop: 16 }}>
-          {page_buttons()}
-        </div>
       </div>
     </>
   );

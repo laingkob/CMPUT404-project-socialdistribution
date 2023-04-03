@@ -82,6 +82,7 @@ class PostCreation(APIView, RestService):
     def post(self, request: HttpRequest, *args, **kwargs):  # create a new post
         if request.content_type != CONTENT_TYPE_JSON:
             return HttpResponseBadRequest()
+
         try:
             body = request.data
         except AttributeError:  # tests don't run without this

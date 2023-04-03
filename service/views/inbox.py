@@ -178,6 +178,7 @@ class InboxView(APIView):
 
         return HttpResponse(status=202)
 
+
     def get_or_create_inbox(self, author: Author):
         try:  # if inbox is empty, it will likely not exist yet, so we need to either get it or instantiate it
             inbox = Inbox.objects.get(author=author) # author_id is the primary key for an inbox
