@@ -10,17 +10,17 @@ import requests
 from service.models.post import Post
 
 
-AUTH = {'Authorization': 'Basic ' + settings.REMOTE_USERS[1][2]}
+AUTH = settings.REMOTE_USERS[1][2]
 HOST = settings.REMOTE_USERS[1][1]
 
 # region AUTHOR HELPERS
 
-def get_or_create_author(author_json, hostname):
+def get_or_create_author(author_json, hostname=HOST):
+
+    author_url = author_json["id"].rstrip('/')
     try:
-        print(author_json)
         # update old -> don't change host_url or id
-        print(author_json["url"])
-        old_author = Author.objects.get(url=author_json["url"])
+        old_author = Author.objects.get(url=author_url)
 
         old_author.github = author_json["github"]
         old_author.displayName = author_json["displayName"]
@@ -31,20 +31,21 @@ def get_or_create_author(author_json, hostname):
     except ObjectDoesNotExist:
         # create new
         new_author = Author()
-        new_author._id = f"{settings.DOMAIN}/authors/{author_json['id']}"  # we use the GUID sent to us
+        #new_author._id = author_url  # we use the GUID sent to us
         new_author.github = author_json["github"]
         new_author.displayName = author_json["displayName"]
-        new_author.url = author_json["url"]
-        new_author.host = hostname
+        new_author.url = author_url
+        new_author.host = HOST
         new_author.save()
 
         return new_author
 
 def get_single_author(author):
-    author_guid = author.url.rsplit('/', 2)[-2]
+    author_guid = author.url.rsplit('/', 1)[-1]
+    print(author_guid)
     try:
         response = requests.get(HOST + "service/authors/" + author_guid + "/",
-                                headers=AUTH)
+                                auth=AUTH)
         response.close()
     except:
         return None
@@ -57,18 +58,20 @@ def get_single_author(author):
 
 def get_multiple_authors():
     try:
-        response = requests.get(HOST + "service/authors/", headers=AUTH)
+        response = requests.get(HOST + "service/authors/", auth=AUTH)
         response.close()
     except Exception as e:
         return
 
     if response.status_code < 200 or response.status_code > 299:  # unsuccessful
         print(response.status_code)
+        print(response.text)
         return
 
     response_json = response.json()
 
     for author in response_json["items"]:
+        print(author)
         get_or_create_author(author, HOST)
 
 # endregion
@@ -76,10 +79,10 @@ def get_multiple_authors():
 # region POST HELPERS
 
 def get_multiple_posts(author):
-    url = HOST + "service/authors/" + author.url.rsplit('/', 2)[-2] + "/posts/"
+    url = HOST + "service/authors/" + author.url.rsplit('/', 1)[-1] + "/posts/"
 
     try:
-        response = requests.get(url, headers=AUTH)
+        response = requests.get(url, auth=AUTH)
         response.close()
     except:
         return
@@ -132,10 +135,10 @@ def post_to_object(post, json_object, author):
 # region FOLLOW REQUESTS
 
 def serialize_follow_request(request):
-    author_guid = request["object"]["url"].rsplit('/', 2)[-2]
+    author_guid = request["object"]["url"].rsplit('/', 1)[-1]
     try:
         response = requests.get(HOST + "service/authors/" + author_guid + "/",
-                                headers={'Authorization': 'Basic ' + settings.REMOTE_USERS[1][2]})
+                                auth=AUTH)
         response.close()
     except:
         return None
@@ -157,7 +160,7 @@ def serialize_follow_request(request):
 
     url = HOST + "service/authors/" + author_guid + "/inbox/"
     try:  # try get Author
-        response = requests.post(url, json=json_request, headers={'Authorization': 'Basic ' + settings.REMOTE_USERS[1][2]})
+        response = requests.post(url, json=json_request, auth=AUTH)
         response.close()
     except Exception as e:
         print(e)

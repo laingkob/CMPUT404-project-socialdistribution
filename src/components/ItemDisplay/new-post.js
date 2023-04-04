@@ -33,7 +33,7 @@ export default function NewPost() {
 
     const sendPost = async () => {
         await send_api(followers, posted);
-        navigate("/");
+        //navigate("/");
     }
 
     const submit = async (e) => {

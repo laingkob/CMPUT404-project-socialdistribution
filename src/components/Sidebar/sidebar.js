@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearUser } from "../../reducer/userSlice";
 import { Link } from "react-router-dom";
 import EditButton from "../Buttons/edit_button";
+import profile from "../../images/profile.png";
 
 function Sidebar() {
   //Get user & url info
@@ -48,7 +49,7 @@ function Sidebar() {
       <div className="Sidebar">
         {/* Profile Preview */}
         <div className="Profile" id="profile-tab">
-          <img className="profile-pic" src={user.profileImage} alt="profile" />
+          <img className="profile-pic" src={user.profileImage === "" ? profile : user.profileImage} alt="profile" />
           <Link to={authorUrl + "/edit"}>
             <EditButton />
           </Link>
@@ -80,7 +81,7 @@ function Sidebar() {
                 </ul>
             </li>
             <li>
-                <button className='Page' onClick={goToAdd}>Friends</button>
+                <button className='Page' onClick={goToAdd}>Add Friends</button>
                 {/* Requests Options Submenu, only show if Friends selected */}
                 <ul className="Options-bar">
                     <li>

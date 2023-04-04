@@ -13,7 +13,7 @@ import service.services.team_16.team_16 as team_16
 from service.models.author import Author
 from service.models.inbox import Inbox
 from service.service_constants import *
-from service.services import team_14
+from service.services import team_14, team_22
 
 from service.services.inbox_service import handle_follow, handle_post, handle_comment, handle_like, ConflictException
 
@@ -80,10 +80,14 @@ class InboxView(APIView):
     def post(self, request: HttpRequest, *args, **kwargs):
         self.author_id = kwargs['author_id']
 
+        print(self.author_id)
+
         try:
             author = Author.objects.get(_id=self.author_id, is_active=True)
         except ObjectDoesNotExist:
             return HttpResponseNotFound()
+
+        print(author)
 
         try:
             body = request.data
@@ -98,10 +102,10 @@ class InboxView(APIView):
 
         # remote-user-t22
         if author.host == settings.REMOTE_USERS[1][1]:
-            #response = team_22.handle_inbox(body)
+            response = team_22.handle_inbox(body)
 
-            #if response is None:
-                #return HttpResponseServerError()
+            if response is None:
+                return HttpResponse(status=500)
 
             return HttpResponse(status=202)
 
@@ -142,7 +146,8 @@ class InboxView(APIView):
         except KeyError as e:
             print(e)
             return HttpResponseBadRequest()
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist as e:
+            print(e)
             return HttpResponseNotFound()
         except ConflictException:
             return HttpResponse(status=409)
