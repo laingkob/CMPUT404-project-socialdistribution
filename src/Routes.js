@@ -106,7 +106,7 @@ function App() {
             path="user/:author_id/edit"
             element={
               <PrivateRoute>
-                <Posts />
+                <ProfileEdit />
               </PrivateRoute>
             }
           ></Route>
