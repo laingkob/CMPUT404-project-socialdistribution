@@ -14,7 +14,7 @@ export default function NewPost() {
     const [edit, setEdit] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [contentType, setContentType] = useState("");
+    const [contentType, setContentType] = useState("text/plain");
     const [body, setBody] = useState("");
     const [visibility, setVisibility] = useState("PUBLIC");
     const [unlisted, setUnlisted] = useState(false);
