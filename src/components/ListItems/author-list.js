@@ -1,5 +1,6 @@
 import React from 'react'
 import './author-list.css';
+import profile from "../../images/profile.png";
 
 function AuthorList({user_list}) { //gets a json object, and returns a list item for it
    
@@ -11,7 +12,7 @@ function AuthorList({user_list}) { //gets a json object, and returns a list item
         return (
             <div className='follower'>
                 <h6><a href={authorUrl}>{author.displayName}</a></h6>
-                {<img alt="author" src={author.profileImage}></img>}
+                {<img alt="author" src={author.profileImage === "" ? profile : author.profileImage}></img>}
             </div>
         );
     };
