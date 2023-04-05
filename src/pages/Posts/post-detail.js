@@ -89,7 +89,6 @@ function PostDetail() {
     if (postData.contentType.split("/")[0] === "image") {
       setImage(true);
     }
-  console.log(postData);
     if (postData.author.id === user.id && postData.visibility === "PUBLIC") {
       setMine(true);
     }
@@ -198,7 +197,7 @@ function PostDetail() {
                   </div>
                   <div className="timestamp">{postInfo.published}</div>
                 </div>
-              </div>
+            </div>
               <div className="Social">
                 {likeInfo && <div>{likeInfo.items.length} Liked this post</div>}
                 <div className="interaction-options">
@@ -271,7 +270,7 @@ function PostDetail() {
               </div>
             </div>
           )}
-        </div>
+          </div>
       )}
     </div>
   );
