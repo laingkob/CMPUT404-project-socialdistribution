@@ -4,7 +4,7 @@ export const get_author = async (authorId, success, failed) => {
   console.log("Attempting to retrieve author info for", { authorId });
 
   try {
-    const res = await axios.get(`authors/${authorId}`, {
+    const res = await axios.get(`authors/${authorId}/`, {
       headers: {
         Accept: "application/json",
       },
