@@ -1,7 +1,7 @@
 //Styles
 import "./posts.css";
 //Functions
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { post_comment } from "../../api/comment_api";
@@ -13,8 +13,6 @@ import LikeHeart from "../Buttons/like_button";
 import CommentArrow from "../Buttons/comment_button";
 import ShareIcon from "../Buttons/share_button";
 import ShareModal from "../share-modal";
-import { Modal } from "@mui/material";
-
 import profile from "../../images/profile.png";
 
 export default function Post(data) {
@@ -98,7 +96,16 @@ export default function Post(data) {
         {/* Profile image w/link to post author's profile */}
         <div className="profile from">
           <a href={authorUrl}>
-            {<img alt="author" src={data.post.author.profileImage === "" ? profile : data.post.author.profileImage}></img>}
+            {
+              <img
+                alt="author"
+                src={
+                  data.post.author.profileImage === ""
+                    ? profile
+                    : data.post.author.profileImage
+                }
+              ></img>
+            }
           </a>
         </div>
 
@@ -111,7 +118,12 @@ export default function Post(data) {
             <img
               className="posted-image"
               alt={data["post"]["description"]}
-              src={"data:"+data["post"]["contentType"]+";base64,"+data["post"]["content"]}
+              src={
+                "data:" +
+                data["post"]["contentType"] +
+                ";base64," +
+                data["post"]["content"]
+              }
             />
           )}
           {markdown && (
@@ -126,9 +138,7 @@ export default function Post(data) {
         </div>
         <div className="interaction-options">
           <LikeHeart handleLike={handleLike} liked={liked} />
-          <CommentArrow
-            setCommentFieldVisibilty={setCommentFieldVisibilty}
-           />
+          <CommentArrow setCommentFieldVisibilty={setCommentFieldVisibilty} />
           {/* Share Button */}
           {shareable && (
             <div>
@@ -139,32 +149,32 @@ export default function Post(data) {
         </div>
       </div>
       {commentFieldVisibilty && (
-            <div className="comment-input-form">
-            <input
-                type="radio"
-                id="text"
-                name="contentType"
-                value="text/plain"
-                defaultChecked
-                onChange={(e) => setCommentType(e.target.value)}
-            />
-            <label htmlFor="text">Text</label>
-            <input
-                type="radio"
-                id="markdown"
-                name="contentType"
-                value="text/markdown"
-                onChange={(e) => setCommentType(e.target.value)}
-            />
-            <label htmlFor="markdown">Markdown</label>
-            <input
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Enter the comment here"
-                type="text"
-            />
-            <button onClick={submitComment}>Submit</button>
-            </div>
-            )}
+        <div className="comment-input-form">
+          <input
+            type="radio"
+            id="text"
+            name="contentType"
+            value="text/plain"
+            defaultChecked
+            onChange={(e) => setCommentType(e.target.value)}
+          />
+          <label htmlFor="text">Text</label>
+          <input
+            type="radio"
+            id="markdown"
+            name="contentType"
+            value="text/markdown"
+            onChange={(e) => setCommentType(e.target.value)}
+          />
+          <label htmlFor="markdown">Markdown</label>
+          <input
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Enter the comment here"
+            type="text"
+          />
+          <button onClick={submitComment}>Submit</button>
+        </div>
+      )}
       <div className="timestamp">{data["post"]["published"]}</div>
     </div>
   );
