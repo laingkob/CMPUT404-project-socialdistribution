@@ -1,9 +1,9 @@
 // Import the react JS packages
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { signInUser } from "../../reducer/userSlice";
-import { signIn_api } from "../../api/user_api";
+import { clearUser, signInUser } from "../../reducer/userSlice";
+import { signIn_api, signOut_api } from "../../api/user_api";
 import { Alert, Snackbar } from "@mui/material";
 import "./signin.css";
 
@@ -11,6 +11,10 @@ import "./signin.css";
 export const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const redirectTo = queryParams.get("redirectTo");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +28,8 @@ export const SignIn = () => {
 
   const success = (res) => {
     dispatch(signInUser(res));
-    navigate("/");
+    console.log("Redirect To", redirectTo);
+    navigate(redirectTo);
   };
 
   const failed = (status) => {
@@ -43,6 +48,15 @@ export const SignIn = () => {
     console.log("Loggin in with", username, password);
     signIn_api(username, password, success, failed);
   };
+
+  const successSignOut = () => {
+    dispatch(clearUser());
+  };
+
+  //try to sign out user first if sign in page accessed
+  useEffect(() => {
+    signOut_api(successSignOut);
+  });
 
   return (
     <div>

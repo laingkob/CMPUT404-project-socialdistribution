@@ -1,13 +1,14 @@
 .myprofile {
   text-align: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--bark);
   flex: 1;
   float: right;
 }
 
 .profileHead {
   background-color: var(--driftwood);
+  color: white;
   padding: 1em;
   float: top;
 }

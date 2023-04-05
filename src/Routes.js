@@ -22,18 +22,23 @@ function App() {
         <Routes>
           {/* Inbox */}
           <Route
-            exact path="/"
+            exact
+            path="/"
             element={
               <PrivateRoute>
-                <Stream/>
+                <Stream />
               </PrivateRoute>
-            }/>
-          <Route exact path="/inbox"
+            }
+          />
+          <Route
+            exact
+            path="/inbox"
             element={
               <PrivateRoute>
-                <Inbox/>
+                <Inbox />
               </PrivateRoute>
-            }/>
+            }
+          />
           {/* Friends */}
           <Route
             path="/friends"
@@ -76,23 +81,26 @@ function App() {
             }
           />
           {/* Posting */}
-          <Route
-            path="/posts"
-            >
-            <Route path="new"
+          <Route path="/posts">
+            <Route
+              path="new"
               element={
                 <PrivateRoute>
                   <Posts />
                 </PrivateRoute>
-              }/>
-            <Route path="sent"/>
+              }
+            />
+            <Route path="sent" />
           </Route>
-          <Route exact path="/posts/image"
+          <Route
+            exact
+            path="/posts/image"
             element={
               <PrivateRoute>
                 <ImagePost />
               </PrivateRoute>
-          }/>
+            }
+          />
           <Route
             exact
             path="user/:author_id"
@@ -123,28 +131,15 @@ function App() {
             path="user/:author_id/post/:post_id/edit"
             element={
               <PrivateRoute>
-                <Posts/>
+                <Posts />
               </PrivateRoute>
-            }/>
-          {/* Sign Up */}
-          <Route
-            path="/signup"
-            element={
-              <SignInRoute>
-                <SignUp />
-              </SignInRoute>
-            }
-          ></Route>
-          {/* Sign In */}
-          <Route
-            path="/signin"
-            element={
-              <SignInRoute>
-                <SignIn />
-              </SignInRoute>
             }
           />
-          <Route path="/*"  status={404}/>
+          {/* Sign Up */}
+          <Route path="/signup" element={<SignUp />}></Route>
+          {/* Sign In */}
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/*" status={404} />
         </Routes>
       </Router>
     </div>
