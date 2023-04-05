@@ -12,11 +12,12 @@ import LikeHeart from "../../components/Buttons/like_button";
 import ShareIcon from "../../components/Buttons/share_button";
 import PostList from "../../components/ListItems/post-list";
 import profile from "../../images/profile.png";
+import ShareModal from "../../components/share-modal";
 
 function PostDetail() {
   const { author_id, post_id } = useParams();
   const user = useSelector((state) => state.user);
-  
+
   const [mine, setMine] = useState(false);
   const [postInfo, setPostInfo] = useState(null);
   const [markdown, setMarkdown] = useState(false);
@@ -32,6 +33,10 @@ function PostDetail() {
   const [nextCommentPageInfo, setNextCommentPageInfo] = useState(null);
   const [editLink, setEditLink] = useState("");
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const handleModalOpen = () => setOpen(true);
+  const handleModalClose = () => setOpen(false);
 
   const successPostLike = (success) => {
     setLiked(success);
@@ -92,7 +97,7 @@ function PostDetail() {
     if (postData.author.id === user.id && postData.visibility === "PUBLIC") {
       setMine(true);
     }
-    setEditLink(window.location.href+"/edit");
+    setEditLink(window.location.href + "/edit");
   };
 
   const successLike = (likeData) => {
@@ -123,9 +128,8 @@ function PostDetail() {
   };
 
   const goToEdit = () => {
-    navigate("./edit", {state:{postInfo}});
-  }
-
+    navigate("./edit", { state: { postInfo } });
+  };
 
   useEffect(() => {
     if (likeInfo) {
@@ -170,114 +174,137 @@ function PostDetail() {
       {postInfo && (
         <div className="Fragment sidebar-offset">
           {postInfo !== 404 ? (
-          <>
-          <div className="message">
-            <div className="from">
-              <img alt="author" src={postInfo.author.profileImage === "" ? profile : postInfo.author.profileImage}></img>
-              <h6>
-                <Link to={authorUrl}>{postInfo.author.displayName}</Link>
-              </h6>
-              {mine && <button onClick={goToEdit}>EDIT</button>}
-            </div>
-            <div className="postBody">
-              {image && (
-                 <img
-                 className="posted-image"
-                 alt={postInfo["description"]}
-                 src={"data:"+postInfo["contentType"]+";base64,"+postInfo["content"]}
-                 />
-                )}
-                
-                {!image && (
-              <div className="content-container">
-                
-                <h3 id="title">{postInfo.title}</h3>
+            <>
+              <div className="message">
+                <div className="from">
+                  <img
+                    alt="author"
+                    src={
+                      postInfo.author.profileImage === ""
+                        ? profile
+                        : postInfo.author.profileImage
+                    }
+                  ></img>
+                  <h6>
+                    <Link to={authorUrl}>{postInfo.author.displayName}</Link>
+                  </h6>
+                  {mine && <button onClick={goToEdit}>EDIT</button>}
+                </div>
+                <div className="postBody">
+                  {image && (
+                    <img
+                      className="posted-image"
+                      alt={postInfo["description"]}
+                      src={
+                        "data:" +
+                        postInfo["contentType"] +
+                        ";base64," +
+                        postInfo["content"]
+                      }
+                    />
+                  )}
+                  {!image && (
+                    <div className="content-container">
+                      <h3 id="title">{postInfo.title}</h3>
 
-                {markdown ? (
-                  <Markdown
-                    className="content line"
-                    children={postInfo.content}
-                  >
-                    {/* Mardown doesn't like leading whitespace */}
-                  </Markdown>
-                ) : (
-                  <div className="content line">{postInfo.content}</div>
-                )}
-              </div>)}
-              <div className="timestamp">{postInfo.published}</div>
-            </div>
-          </div>
-          <div className="Social">
-            {likeInfo && <div>{likeInfo.items.length} Liked this post</div>}
-            <div className="interaction-options">
-              <LikeHeart
-                handleLike={() =>
-                  post_like(
-                    `https://social-distribution-w23-t17.herokuapp.com/authors/${author_id}`,
-                    user,
-                    `https://social-distribution-w23-t17.herokuapp.com/authors/${author_id}/posts/${post_id}`,
-                    "context",
-                    successPostLike
-                  )
-                }
-                liked={liked}
-              />
-              {shareable && <ShareIcon />}
-              <div className="comment-input-form">
-                <input
-                  type="radio"
-                  id="text"
-                  name="contentType"
-                  value="text/plain"
-                  defaultChecked
-                  onChange={(e) => setCommentType(e.target.value)}
-                />
-                <label htmlFor="text">Text</label>
-                <input
-                  type="radio"
-                  id="markdown"
-                  name="contentType"
-                  value="text/markdown"
-                  onChange={(e) => setCommentType(e.target.value)}
-                />
-                <label htmlFor="markdown">Markdown</label>
-                <input
-                  id="comment-input"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Enter the comment here"
-                  type="text"
-                />
-                <button
-                  id="comment-submit"
-                  disabled={comment ? false : true}
-                  onClick={submitComment}
-                >
-                  Submit
-                </button>
+                      {markdown ? (
+                        <Markdown
+                          className="content line"
+                          children={postInfo.content}
+                        >
+                          {/* Mardown doesn't like leading whitespace */}
+                        </Markdown>
+                      ) : (
+                        <div className="content line">{postInfo.content}</div>
+                      )}
+                    </div>
+                  )}
+                  <div className="timestamp">{postInfo.published}</div>
+                </div>
               </div>
-            </div>
-            <div className="comments">
-              {commentsInfo && (
-                <div>
-                  <PostList user_list={commentsInfo} />
-                  <button
-                    onClick={prevCommentPage}
-                    disabled={commentPage === 1 ? true : false}
-                  >
-                    prev
-                  </button>
-                  <button
-                    onClick={nextCommentPage}
-                    disabled={nextCommentPageInfo ? false : true}
-                  >
-                    next
-                  </button>
-                </div>)}
+              <div className="Social">
+                {likeInfo && <div>{likeInfo.items.length} Liked this post</div>}
+                <div className="interaction-options">
+                  <LikeHeart
+                    handleLike={() =>
+                      post_like(
+                        `https://social-distribution-w23-t17.herokuapp.com/authors/${author_id}`,
+                        user,
+                        `https://social-distribution-w23-t17.herokuapp.com/authors/${author_id}/posts/${post_id}`,
+                        "context",
+                        successPostLike
+                      )
+                    }
+                    liked={liked}
+                  />
+                  {shareable && (
+                    <div>
+                      <ShareIcon share={handleModalOpen} />
+                      <ShareModal
+                        open={open}
+                        onClose={handleModalClose}
+                        post={postInfo}
+                      />
+                    </div>
+                  )}
+                  <div className="comment-input-form">
+                    <input
+                      type="radio"
+                      id="text"
+                      name="contentType"
+                      value="text/plain"
+                      defaultChecked
+                      onChange={(e) => setCommentType(e.target.value)}
+                    />
+                    <label htmlFor="text">Text</label>
+                    <input
+                      type="radio"
+                      id="markdown"
+                      name="contentType"
+                      value="text/markdown"
+                      onChange={(e) => setCommentType(e.target.value)}
+                    />
+                    <label htmlFor="markdown">Markdown</label>
+                    <input
+                      id="comment-input"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Enter the comment here"
+                      type="text"
+                    />
+                    <button
+                      id="comment-submit"
+                      disabled={comment ? false : true}
+                      onClick={submitComment}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+                <div className="comments">
+                  {commentsInfo && (
+                    <div>
+                      <PostList user_list={commentsInfo} />
+                      <button
+                        onClick={prevCommentPage}
+                        disabled={commentPage === 1 ? true : false}
+                      >
+                        prev
+                      </button>
+                      <button
+                        onClick={nextCommentPage}
+                        disabled={nextCommentPageInfo ? false : true}
+                      >
+                        next
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div> 
-
-            </> ) : (<h2>404 Post Not Found</h2>)}
+            </>
+          ) : (
+            <h2>404 Post Not Found</h2>
+          )}
         </div>
       )}
     </div>
