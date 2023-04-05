@@ -1,7 +1,7 @@
 import "./posts.css";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Markdown from "markdown-it";
+import Markdown from "react-markdown-it";
 import { comment_like } from "../../api/like_api";
 import { get_liked } from "../../api/like_api";
 import LikeHeart from "../Buttons/like_button";
@@ -72,9 +72,8 @@ export default function Comment(data) {
           {markdown && (
             <Markdown
               className="content"
-              children={data["data"]["comment"]}
             >
-              {/* Mardown doesn't like leading whitespace */}
+            {data["data"]["comment"]}
             </Markdown>
           )}
           {!markdown && (
