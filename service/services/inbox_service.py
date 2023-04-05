@@ -11,7 +11,8 @@ from django.conf import settings
 
 from service.models.like import Like
 from service.models.post import Post
-from service.services import team_16, team_14, team_22
+from service.services import team_14, team_22
+from service.services.team_16 import team_16
 
 from service.services.team_10 import authors as team_10_authors, posts as team_10_posts
 
