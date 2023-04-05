@@ -117,7 +117,15 @@ function App() {
                 <PostDetail />
               </PrivateRoute>
             }
-          ></Route>
+          />
+          <Route
+            exact
+            path="user/:author_id/post/:post_id/edit"
+            element={
+              <PrivateRoute>
+                <Posts/>
+              </PrivateRoute>
+            }/>
           {/* Sign Up */}
           <Route
             path="/signup"

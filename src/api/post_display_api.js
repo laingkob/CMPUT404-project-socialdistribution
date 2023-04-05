@@ -81,3 +81,15 @@ export const get_post = async (authorId, postId, success) => {
     success(error.response.status);
   }
 };
+
+export const edit_api = async (authorId, postId, post, onSuccess) => {
+  await axios
+  .post(`authors/${authorId}/posts/${postId}/`, post, head)
+  .then(function (response) {
+    console.log("Edit res: ", response["data"]);
+    onSuccess(response["data"]);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}

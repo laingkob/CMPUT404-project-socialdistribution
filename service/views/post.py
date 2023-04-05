@@ -198,6 +198,9 @@ class PostWithId(APIView, RestService):
             post = Post.objects.get(_id=post_id)
         except:
             return HttpResponseNotFound()
+        
+        if post.visibility != "PUBLIC":     # can only edit public posts
+            return HttpResponseBadRequest()
 
         try:
             post = self.create_post(post, author_id, author, body)
@@ -205,7 +208,8 @@ class PostWithId(APIView, RestService):
             categories = create_categories(body["categories"])
 
         except KeyError as error:
-            return HttpResponseBadRequest()  # should probably include the error
+            print(error)
+            return HttpResponseBadRequest()
 
         post.save()
 
@@ -228,6 +232,9 @@ class PostWithId(APIView, RestService):
 
         if post.author._id != author_id: # cannot delete a post for an author that didn't write it
             return HttpResponseNotFound()
+        
+        if post.visibility != "PUBLIC":  # users can only delete public posts
+            return HttpResponseBadRequest()
 
         post.delete()
 
