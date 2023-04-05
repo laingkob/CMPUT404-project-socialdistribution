@@ -19,7 +19,6 @@ export default function ImageUpload() {
     const [categories, setCategories] = useState([]);
     const [id, setId] = useState("");
     const [pending, setPending] = useState(false);
-    const [timeToGo, setTimeToGo] = useState(false);
     const [data, setData] = useState({});
     const [alert, setAlert] = useState(false);
 

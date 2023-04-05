@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { send_api, post_api, edit_api } from "../../api/post_display_api";
 import { get_followers_for_author } from "../../api/follower_api";
 import "./form.css";
 import { useLocation } from "react-router-dom";
+import { Alert, Snackbar } from "@mui/material";
 
 export default function NewPost() {
     //Get user info
@@ -19,6 +20,9 @@ export default function NewPost() {
     const [unlisted, setUnlisted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [id, setId] = useState("");
+    const [pending, setPending] = useState(false);
+    const [data, setData] = useState({});
+    const [alert, setAlert] = useState(false);
 
     const [followers, setFollowers] = useState([]);
     const [posted, setPosted] = useState(null);
@@ -32,27 +36,31 @@ export default function NewPost() {
 
     const sendPost = async () => {
         await send_api(followers, posted);
-        //navigate("/");
+    }
+
+    const postEdit = async () => {
+        console.log(user, "is attempting to edit post", id);
+        await edit_api(user, id, data, setPosted);
+    }
+
+    const postNew = async () => {
+        console.log(user, "is attempting to post", data);
+        await post_api(user, data, setPosted);
     }
 
     const submit = async (e) => {
         console.log("Submitting ...");
-        let data = {"title": title,
+
+        setData({"title": title,
         "description": description,
         "contentType": contentType,
         "content": body,
         "visibility": visibility,
         "unlisted": unlisted,
-        "categories": categories.split(",")};
+        "categories": categories.split(",")});
 
         e.preventDefault();
-        if (edit) {
-            console.log(user, "is attempting to edit post", id);
-            await edit_api(user, id, data, setPosted);
-        } else {
-            console.log(user, "is attempting to post", data);
-            await post_api(user, data, setPosted);
-        }
+        setPending(true);
     };
 
     const handleCheckbox = (e) => {
@@ -60,6 +68,10 @@ export default function NewPost() {
         let check = e.target.checked ? true : false;
         setUnlisted(check);
     }
+
+    const handleClose = () => {
+        setAlert(false);
+    };
 
     useEffect( () => {
         let data = state;
@@ -83,11 +95,34 @@ export default function NewPost() {
         populateFollowers();
       }, []);
 
-    useEffect(() => {
-        //runs when object posted
-        sendPost();
-      }, [posted]);
+    //Adapted from code by Theviyanthan Krishnamohan https://thivi.medium.com/
+    // at https://medium.com/swlh/prevent-useeffects-callback-firing-during-initial-render-the-armchair-critic-f71bc0e03536#:~:text=Well%2C%20useEffect's%20callback%20function%20gets,false%20after%20the%20initial%20render.
+    const init1 = useRef(true);
+    useEffect(() => {    //prevent on intial render
+            if (init1.current) {
+                init1.current = false;
+            } else {
+                //runs when object posted
+                setAlert(true);
+                sendPost();
+                navigate("/");
+            }
+    }, [posted]);
 
+    const init2 = useRef(true);
+    useEffect( () => {
+        if (init2.current) {
+            init2.current = false;
+        } else {
+            if (edit) {
+                postEdit();
+            } else {
+                postNew();
+            }
+        }
+    }, [pending]);
+    //endcite
+    
     return (
         <div className="form-container">
             <form className="form" encType="multipart/form-data" method="POST">
@@ -177,6 +212,15 @@ export default function NewPost() {
                 /><br/>
                 <button type="submit" className="btn" onClick={submit}>Submit</button>
             </form>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={alert}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+                "Posted"
+                </Alert>
+            </Snackbar>
         </div>
 
     );
