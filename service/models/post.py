@@ -13,7 +13,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     _id = models.URLField(primary_key=True) #post id
-    title = models.CharField(max_length=32)
+    title = models.CharField(max_length=256)
     source = models.URLField()
     origin = models.URLField()
     description = models.TextField()
