@@ -1,12 +1,15 @@
 // Import the react JS packages
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signUp_api } from "../../api/user_api";
+import { signOut_api, signUp_api } from "../../api/user_api";
 import "./signup.css";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../reducer/userSlice";
 
 // Define the Login function.
 export const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch;
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -40,6 +43,15 @@ export const SignUp = () => {
       setConfirmPassword("");
     }
   };
+
+  const successSignOut = () => {
+    dispatch(clearUser());
+  };
+
+  //try to sign out user first if sign up page accessed
+  useEffect(() => {
+    signOut_api(successSignOut);
+  });
 
   return (
     <div className="Auth-form-container">
