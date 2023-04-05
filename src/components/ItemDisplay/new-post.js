@@ -5,7 +5,6 @@ import { send_api, post_api, edit_api } from "../../api/post_display_api";
 import { get_followers_for_author } from "../../api/follower_api";
 import "./form.css";
 import { useLocation } from "react-router-dom";
-import "./form.css";
 
 export default function NewPost() {
     //Get user info
