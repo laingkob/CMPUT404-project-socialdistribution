@@ -126,16 +126,12 @@ def handle_follow(inbox: Inbox, body, author: Author):  # we actually create the
 def handle_like(inbox: Inbox, body, author: Author):
     foreign_author = Author()
 
-    print("HERE " + str(body))
-    print(author)
-
     # check if author is remote
     if body["author"]["host"] == settings.REMOTE_USERS[0][1]:
         foreign_author = team_14.get_or_create_author(body["author"])
     # remote-user-t22
     elif body["author"]["host"] == settings.REMOTE_USERS[1][1] or body["author"]["host"] == "cmput404-group-project.herokuapp.com":
         foreign_author = team_22.get_or_create_author(body["author"])
-        print("MADE IT")
     # remote-user-t16
     elif body["author"]["host"] == settings.REMOTE_USERS[2][1]:
         foreign_author = team_16.get_or_create_author(body["author"])
@@ -146,8 +142,6 @@ def handle_like(inbox: Inbox, body, author: Author):
 
     id = Like.create_like_id(foreign_author._id, body["object"])
 
-    print(id)
-
     like = inbox.likes.all().filter(_id=id)
 
     if like.exists():
@@ -155,32 +149,23 @@ def handle_like(inbox: Inbox, body, author: Author):
 
     try:
         like = Like.objects.get(_id=id)
-        print(like)
     except ObjectDoesNotExist:
         like = Like()
-        print(like)
         like._id = id
         try:
             like.context = body["context"]
         except:
             like.context = body["@context"]
 
-        print(like)
-
         if(body["object"].split("/")[-2] == "posts"):
             like.summary = f"{foreign_author.displayName} likes your post"
         else:
             like.summary = f"{foreign_author.displayName} likes your comment"
 
-        print(like)
-
         like.author = foreign_author
-
-        print(like)
 
         like.object = body["object"]
         like.save()
-        print(like)
 
     inbox.likes.add(like)
     inbox.save()
