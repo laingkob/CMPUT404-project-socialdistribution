@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import Markdown from "react-markdown-it";
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sidebar";
 import "./post-detail.css";
@@ -203,18 +203,16 @@ function PostDetail() {
                       }
                     />
                   )}
-
                   {!image && (
                     <div className="content-container">
                       <h3 id="title">{postInfo.title}</h3>
 
                       {markdown ? (
-                        <ReactMarkdown
+                        <Markdown
                           className="content line"
-                          children={postInfo.content}
                         >
-                          {/* Mardown doesn't like leading whitespace */}
-                        </ReactMarkdown>
+                        {postInfo.content}
+                        </Markdown>
                       ) : (
                         <div className="content line">{postInfo.content}</div>
                       )}

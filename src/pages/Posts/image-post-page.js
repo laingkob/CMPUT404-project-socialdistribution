@@ -8,9 +8,6 @@ export default function ImagePost() {
         <div className='Page'>
         <Sidebar/>
         <div className='Fragment sidebar-offset'>
-          <p>
-              This is the image post creation page
-          </p>
           <ImageUpload/>
         </div>
       </div>
