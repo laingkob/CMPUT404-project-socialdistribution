@@ -101,7 +101,7 @@ def handle_follow(inbox: Inbox, body, author: Author):  # we actually create the
         foreign_author = team_14.get_or_create_author(body["actor"])
     elif body["actor"]["host"] == settings.REMOTE_USERS[1][1] or body["actor"]["host"] == "cmput404-group-project.herokuapp.com":
         foreign_author = team_22.get_or_create_author(body["actor"])
-    elif body["actor"]["host"] == settings.REMOTE_USERS[2][1]:
+    elif body["actor"]["host"] == settings.REMOTE_USERS[2][1] or body["actor"]["host"] == "https://sd16-api.herokuapp.com":
         foreign_author = team_16.get_or_create_author(body["actor"])
     elif body["actor"]["host"] == settings.REMOTE_USERS[3][1]:
         foreign_author = service.services.team_10.helper_constants.get_or_create_author(body["actor"])
