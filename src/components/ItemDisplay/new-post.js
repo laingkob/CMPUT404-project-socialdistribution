@@ -13,7 +13,7 @@ export default function NewPost() {
     const [edit, setEdit] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [contentType, setContentType] = useState("text/plain");
+    const [contentType, setContentType] = useState("");
     const [body, setBody] = useState("");
     const [visibility, setVisibility] = useState("PUBLIC");
     const [unlisted, setUnlisted] = useState(false);
@@ -125,13 +125,13 @@ export default function NewPost() {
                     Friends Only
                     </option>
                 </select>
-                {!edit && <label>  Unlisted</label>&&
+                {!edit && <><label>  Unlisted</label>
                 <input
                     name="unlisted"
                     type="checkbox"
                     defaultChecked={false}
                     onChange={handleCheckbox}
-                />}
+                /></>}
                 <br/>
                 <div className="form-group">
                     <input
